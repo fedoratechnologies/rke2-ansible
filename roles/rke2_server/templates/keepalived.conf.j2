@@ -1,0 +1,23 @@
+vrrp_script chk_rke2 {
+  script "systemctl is-active rke2-server"
+  interval 2
+  weight 2
+}
+
+vrrp_instance VI_1 {
+  state BACKUP
+  interface {{ interface }}
+  virtual_router_id 51
+  priority {{ 100 - (server_ips.index(inventory_hostname) * 10) }}
+  advert_int 1
+  authentication {
+    auth_type PASS
+    auth_pass cattle
+  }
+  virtual_ipaddress {
+    {{ vip }}/24
+  }
+  track_script {
+    chk_rke2
+  }
+}
