@@ -1,0 +1,21 @@
+---
+- name: Install common dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - curl
+    - apt-transport-https
+
+- name: Configure firewall
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - 6443
+    - 9345
+    - 8472/udp
+    - 10250
+  when: ansible_os_family == 'Debian'
