@@ -1,0 +1,13 @@
+---
+- hosts: all
+  roles:
+    - common
+
+- hosts: servers
+  roles:
+    - rke2_server
+    - { role: rancher, when: inventory_hostname == groups['servers'][0] }
+
+- hosts: agents
+  roles:
+    - rke2_agent
